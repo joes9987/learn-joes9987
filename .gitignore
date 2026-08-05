@@ -43,3 +43,9 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+.env.local
+
+.ludwitt-creator-creds.json
+
+.ludwitt/

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { listModules } from '@/lib/modules'
+import { isOAuthConfigured } from '@/lib/ludwitt-oauth'
 import { getSession } from '@/lib/session'
 import { SITE } from '@/lib/site'
 
@@ -10,24 +11,38 @@ export const metadata = { title: 'Learn' }
 export default async function LearnIndexPage () {
   const session = await getSession()
   const modules = listModules()
+  const oauthReady = isOAuthConfigured()
 
   if (!session) {
     return (
       <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-8">
-        <h1 className="text-2xl font-bold">Launch required</h1>
+        <h1 className="text-2xl font-bold">Sign in with Ludwitt</h1>
         <p className="mt-3 text-sm text-[var(--muted-foreground)]">
-          Open EudaLearn from the Ludwitt launcher so we can validate your JWT and attribute events.
+          Counted sessions use your Ludwitt account. Sign in to start practice and attribute learning
+          events.
         </p>
-        {SITE.listingUrl ? (
-          <a
-            href={SITE.listingUrl}
-            className="mt-6 inline-flex rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)]"
-          >
-            Open via Ludwitt
-          </a>
-        ) : (
-          <p className="mt-6 text-sm text-[var(--muted)]">Listing URL not configured yet.</p>
-        )}
+        <div className="mt-6 flex flex-wrap gap-3">
+          {oauthReady ? (
+            <a
+              href="/api/auth/ludwitt"
+              className="inline-flex rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)]"
+            >
+              Sign in with Ludwitt
+            </a>
+          ) : (
+            <p className="text-sm text-[var(--muted)]">OAuth credentials not configured.</p>
+          )}
+          {SITE.listingUrl ? (
+            <a
+              href={SITE.listingUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold hover:border-[var(--primary)]"
+            >
+              Marketplace listing
+            </a>
+          ) : null}
+        </div>
       </div>
     )
   }

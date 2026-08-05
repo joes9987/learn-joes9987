@@ -13,6 +13,8 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
   const [lastCorrect, setLastCorrect] = useState<boolean | null>(null)
   const [pending, startTransition] = useTransition()
   const [eventError, setEventError] = useState<string | null>(null)
+  const [coachTip, setCoachTip] = useState<string | null>(null)
+  const [coachNote, setCoachNote] = useState<string | null>(null)
 
   const question = module.quiz[qi]
   const total = module.quiz.length
@@ -50,6 +52,30 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
     }
   }
 
+  async function fetchCoachTip (context: string) {
+    setCoachNote(null)
+    try {
+      const res = await fetch('/api/coach', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ context })
+      })
+      const data = (await res.json().catch(() => ({}))) as {
+        tip?: string
+        error?: string
+        code?: string
+      }
+      if (!res.ok) {
+        setCoachTip(null)
+        setCoachNote(data.error ?? `Coach unavailable (${res.status})`)
+        return
+      }
+      setCoachTip(data.tip ?? null)
+    } catch {
+      setCoachNote('Coach network error')
+    }
+  }
+
   function submitAnswer () {
     if (choice === null || !question) return
     const ok = choice === question.answer
@@ -62,6 +88,9 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
         correct: ok,
         choice
       })
+      await fetchCoachTip(
+        `Module ${module.title}. Question: ${question.prompt}. Learner was ${ok ? 'correct' : 'incorrect'}. Explanation: ${question.explain}`
+      )
       setStage('feedback')
     })
   }
@@ -155,6 +184,15 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
             {lastCorrect ? 'Correct' : 'Not quite'}
           </p>
           <p className="mt-2 text-sm text-[var(--muted-foreground)]">{question.explain}</p>
+          {coachTip ? (
+            <p className="mt-4 rounded-xl border border-[var(--primary)]/30 bg-[var(--accent-soft)] px-3 py-2 text-sm text-[var(--muted-foreground)]">
+              <span className="font-semibold text-[var(--primary)]">Ludwitt coach · </span>
+              {coachTip}
+            </p>
+          ) : null}
+          {coachNote ? (
+            <p className="mt-3 text-xs text-[var(--muted)]">{coachNote}</p>
+          ) : null}
           <button
             type="button"
             disabled={pending}
