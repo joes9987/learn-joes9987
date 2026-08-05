@@ -8,10 +8,11 @@ export default async function LaunchErrorPage ({ searchParams }: Props) {
   const { reason } = await searchParams
   return (
     <div className={`${ui.cardElevated} mx-auto max-w-lg`}>
-      <p className={ui.eyebrow}>Sign-in blocked</p>
+      <p className={ui.eyebrow}>Couldn&apos;t start session</p>
       <h1 className={`${ui.pageTitle} mt-2`}>Sign in with Ludwitt</h1>
       <p className={`mt-3 ${ui.pageSubtitle}`}>
-        EudaLearn starts counted learning sessions via Ludwitt OAuth (or a valid platform launch token).
+        This launch link wasn&apos;t accepted. Sign in with Ludwitt to start a counted practice
+        session.
         {reason ? (
           <>
             {' '}

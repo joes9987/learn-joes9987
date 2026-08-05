@@ -1,6 +1,8 @@
 export const SITE = {
   name: 'EudaLearn',
-  tagline: 'Builder skills — ship with AI tools, instrumented for Ludwitt.',
+  tagline: 'Short practice modules that sharpen how you brief, launch, and ship with AI.',
+  description:
+    'Practice prompt briefs, launch trust, event telemetry, and suite thinking in about 30 minutes. Sign in with Ludwitt so your sessions count.',
   cohort: 'Hult Summer Pilot 2026',
   marketUrl: process.env.NEXT_PUBLIC_EUDA_MARKET_URL ?? 'https://showcase-joes9987.vercel.app',
   pmUrl: process.env.NEXT_PUBLIC_EUDA_PM_URL ?? 'https://pm-joes9987.vercel.app',

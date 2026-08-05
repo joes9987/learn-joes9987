@@ -18,37 +18,42 @@ export default function HomePage () {
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-[var(--muted-foreground)]">{SITE.tagline}</p>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--muted)]">
-          Short practice modules on prompt briefs, launch trust, event telemetry, and suite thinking —
-          instrumented for Ludwitt. Sign in with your Ludwitt account so sessions and events are
-          attributed correctly. Prefer the marketplace listing when sharing with peers.
+          {SITE.description} Prefer the marketplace listing when sharing with peers.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <a href="/login" className={ui.btnPrimaryLg}>
+          <Link href="/learn" className={ui.btnPrimaryLg}>
+            Start practicing
+          </Link>
+          <a href="/login" className={ui.btnSecondary}>
             Sign in with Ludwitt
           </a>
           {listing ? (
             <a href={listing} target="_blank" rel="noreferrer" className={ui.btnSecondary}>
               Marketplace listing
             </a>
-          ) : (
-            <span className={`${ui.btnSecondary} opacity-60`}>Marketplace listing pending</span>
-          )}
-          <Link href="/learn" className={ui.btnSecondary}>
-            Modules
-          </Link>
+          ) : null}
         </div>
       </section>
 
       <section>
         <h2 className={ui.pageTitle}>Modules</h2>
+        <p className={`mt-2 ${ui.pageSubtitle}`}>
+          Four short drills. Sign in once, then work through them at your pace.
+        </p>
         <ul className="mt-4 grid gap-4 sm:grid-cols-2">
           {modules.map((m) => (
-            <li key={m.id} className={ui.card}>
-              <p className="text-xs text-[var(--muted)]">
-                {m.minutes} min · {m.xp} XP
-              </p>
-              <h3 className="mt-1 font-semibold text-[var(--foreground)]">{m.title}</h3>
-              <p className="mt-2 text-sm text-[var(--muted-foreground)]">{m.summary}</p>
+            <li key={m.id}>
+              <Link
+                href="/learn"
+                className={`${ui.card} block transition hover:border-[var(--primary)]`}
+              >
+                <p className="text-xs text-[var(--muted)]">
+                  {m.minutes} min · {m.xp} XP
+                </p>
+                <h3 className="mt-1 font-semibold text-[var(--foreground)]">{m.title}</h3>
+                <p className="mt-2 text-sm text-[var(--muted-foreground)]">{m.summary}</p>
+                <p className="mt-3 text-sm font-semibold text-[var(--primary)]">Practice →</p>
+              </Link>
             </li>
           ))}
         </ul>

@@ -68,12 +68,16 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
       }
       if (!res.ok) {
         setCoachTip(null)
-        setCoachNote(data.error ?? `Coach unavailable (${res.status})`)
+        if (data.code === 'INSUFFICIENT_PAID_CREDITS' || res.status === 402) {
+          setCoachNote('Coach tip unavailable — top up Ludwitt credits to enable tips.')
+        } else {
+          setCoachNote('Coach tip unavailable right now. Keep going with the explanation above.')
+        }
         return
       }
       setCoachTip(data.tip ?? null)
     } catch {
-      setCoachNote('Coach network error')
+      setCoachNote('Coach tip unavailable right now. Keep going with the explanation above.')
     }
   }
 
@@ -126,7 +130,11 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
           {module.title}
         </h1>
         <p className="mt-2 text-sm text-[var(--muted-foreground)]">{module.summary}</p>
-        {eventError ? <p className={`mt-3 ${ui.alertWarning}`}>Event note: {eventError}</p> : null}
+        {eventError ? (
+          <p className={`mt-3 ${ui.alertWarning}`}>
+            Practice is still available — session sync hit a snag. You can continue.
+          </p>
+        ) : null}
       </div>
 
       {stage === 'lesson' ? (
@@ -203,10 +211,10 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
         <section className={ui.cardSolid}>
           <p className="text-lg font-semibold text-[var(--foreground)]">Module complete</p>
           <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-            Score {correctCount}/{total} ({scorePct}%). +{module.xp} XP toward your builder streak.
+            Score {correctCount}/{total} ({scorePct}%). +{module.xp} XP for this module.
           </p>
           <p className="mt-3 text-xs text-[var(--muted)]">
-            Events fired: lesson_started, quiz_submitted, lesson_completed (+ heartbeats while open).
+            Session recorded for your Ludwitt practice.
           </p>
           <a href="/learn" className={`mt-6 inline-flex ${ui.btnPrimaryLg}`}>
             Back to modules

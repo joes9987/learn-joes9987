@@ -3,7 +3,10 @@ import { isOAuthConfigured } from '@/lib/ludwitt-oauth'
 import { SITE } from '@/lib/site'
 
 export const dynamic = 'force-dynamic'
-export const metadata = { title: 'Sign in' }
+export const metadata = {
+  title: 'Sign in',
+  description: 'Sign in with Ludwitt to practice EudaLearn modules and attribute your sessions.'
+}
 
 export default function LoginPage () {
   return (

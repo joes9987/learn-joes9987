@@ -40,8 +40,7 @@ export function LoginClient ({
         <p className={ui.eyebrow}>Ludwitt</p>
         <h1 className={`${ui.pageTitle} mt-2 text-3xl`}>Sign in</h1>
         <p className={`mt-3 ${ui.pageSubtitle}`}>
-          EudaLearn uses your Ludwitt identity so practice events and coach tips are attributed
-          correctly.
+          Use your Ludwitt account so practice sessions and coach tips are attributed to you.
         </p>
 
         {oauthReady ? (
@@ -49,58 +48,61 @@ export function LoginClient ({
             Sign in with Ludwitt
           </a>
         ) : (
-          <p className="mt-6 text-sm text-[var(--muted)]">OAuth credentials not configured.</p>
+          <p className="mt-6 text-sm text-[var(--muted)]">
+            Sign-in isn&apos;t available right now. Try again later, or use the option below if you
+            have a Creator test token.
+          </p>
         )}
 
-        <p className="mt-4 text-xs text-[var(--muted)]">
-          If Ludwitt shows <span className="font-mono">invalid_client</span>, their OAuth authorize
-          endpoint is currently rejecting Creator-registered apps. Use a Creator Test mode token
-          below — it is a real Ludwitt access token and powers{' '}
-          <span className="font-mono">/api/coach</span>.
-        </p>
-      </section>
-
-      <section className={ui.cardSolid}>
-        <h2 className="font-display text-lg font-semibold text-[var(--foreground)]">
-          Creator Test mode token
-        </h2>
-        <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-[var(--muted-foreground)]">
-          <li>
-            Open your app in{' '}
-            <a
-              className={ui.linkAccent}
-              href="https://pitchrise.ludwitt.com/learning-engineers"
-              target="_blank"
-              rel="noreferrer"
+        <details className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--card-solid)] px-4 py-3">
+          <summary className="cursor-pointer text-sm font-medium text-[var(--foreground)]">
+            Having trouble signing in?
+          </summary>
+          <div className="mt-3 space-y-3">
+            <p className="text-sm text-[var(--muted-foreground)]">
+              You can continue with a Ludwitt Creator test token (starts with{' '}
+              <span className="font-mono">lt_</span>). Graders and creators: mint one from your app
+              settings, paste it here, then continue.
+            </p>
+            <ol className="list-decimal space-y-1 pl-5 text-sm text-[var(--muted-foreground)]">
+              <li>
+                Open{' '}
+                <a
+                  className={ui.linkAccent}
+                  href="https://pitchrise.ludwitt.com/learning-engineers"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Ludwitt Creator
+                </a>
+              </li>
+              <li>
+                Click <strong>Mint test token</strong>, copy the value
+              </li>
+              <li>Paste it below and continue</li>
+            </ol>
+            <textarea
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              placeholder="lt_…"
+              rows={3}
+              className={`${ui.field} font-mono text-sm`}
+            />
+            {error ? <p className={ui.alertError}>{error}</p> : null}
+            <button
+              type="button"
+              disabled={pending || !token.trim()}
+              onClick={submitToken}
+              className={ui.btnPrimary}
             >
-              Ludwitt Creator
-            </a>
-          </li>
-          <li>
-            Click <strong>Mint test token</strong>, copy the <span className="font-mono">lt_…</span>{' '}
-            value
-          </li>
-          <li>Paste it here and continue</li>
-        </ol>
-        <textarea
-          value={token}
-          onChange={(e) => setToken(e.target.value)}
-          placeholder="lt_…"
-          rows={3}
-          className={`${ui.field} font-mono text-sm`}
-        />
-        {error ? <p className={`mt-3 ${ui.alertError}`}>{error}</p> : null}
-        <button
-          type="button"
-          disabled={pending || !token.trim()}
-          onClick={submitToken}
-          className={`mt-4 ${ui.btnPrimary}`}
-        >
-          {pending ? 'Signing in…' : 'Continue with test token'}
-        </button>
+              {pending ? 'Signing in…' : 'Continue with test token'}
+            </button>
+          </div>
+        </details>
+
         {listingUrl ? (
           <p className="mt-4 text-xs text-[var(--muted)]">
-            Listing:{' '}
+            Marketplace:{' '}
             <a className={ui.linkAccent} href={listingUrl} target="_blank" rel="noreferrer">
               {listingUrl}
             </a>

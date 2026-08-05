@@ -4,7 +4,7 @@
     "title": "Write a shippable prompt brief",
     "minutes": 8,
     "xp": 40,
-    "summary": "Turn a vague feature idea into a brief an agent can execute without guessing.",
+    "summary": "You'll turn a vague feature idea into a brief an agent can execute without guessing.",
     "lesson": [
       "A good brief states the user, the job-to-be-done, and what done looks like.",
       "Include constraints: stack, files you may touch, and what not to invent.",
@@ -43,7 +43,7 @@
     "title": "Instrument learning events",
     "minutes": 10,
     "xp": 50,
-    "summary": "Fire the right Ludwitt events so sessions count toward platform metrics.",
+    "summary": "You'll know which learning events to fire so sessions count toward platform metrics.",
     "lesson": [
       "Launch creates a session id you reuse for every event in that visit.",
       "Fire lesson_started when a module opens — not only on page load of marketing.",
@@ -82,7 +82,7 @@
     "title": "Trust the Ludwitt launch JWT",
     "minutes": 8,
     "xp": 45,
-    "summary": "Validate HS256 tokens and reject anything that did not come from the launcher.",
+    "summary": "You'll validate launch tokens and reject anything that did not come from the launcher.",
     "lesson": [
       "Ludwitt redirects to your /launch?token=… with a short-lived HS256 JWT.",
       "Verify signature with jwt_secret, check exp, and confirm app_id matches your registration.",
@@ -116,12 +116,13 @@
     "title": "Ship as part of a suite",
     "minutes": 7,
     "xp": 35,
-    "summary": "Connect learning to the rest of the Euda surfaces without fake SSO claims.",
+    "summary": "You'll connect learning to Market, PM, and Chat without fake SSO claims.",
     "lesson": [
       "EudaLearn is the Phase 2 learning surface; EudaPM, EudaChat, and EudaMarket already cover work, chat, and showcase.",
       "Deep-link from Market /suite so partners and peers can find the app — but counted users should enter via the Ludwitt listing/launcher.",
       "Be honest about auth: Ludwitt JWT for launched sessions; per-host cookies elsewhere.",
-      "Promote the listing URL in cohort channels so later snapshots can measure adoption."
+      "Promote the listing URL in cohort channels so later snapshots can measure adoption.",
+      "One suite story beats four orphan demos: same brand, clear handoffs, no invented shared login."
     ],
     "quiz": [
       {
@@ -135,6 +136,18 @@
         ],
         "answer": 1,
         "explain": "Launcher entry is what ties users to platform metrics."
+      },
+      {
+        "id": "q2",
+        "prompt": "What should you avoid claiming across EudaMarket, EudaPM, EudaChat, and EudaLearn?",
+        "choices": [
+          "That they share branding and deep links",
+          "That they are one product suite for the pilot",
+          "That they share a single SSO session cookie across every host",
+          "That learners should prefer the Ludwitt listing for counted use"
+        ],
+        "answer": 2,
+        "explain": "Auth is per host / Ludwitt launch — do not invent cross-app SSO."
       }
     ]
   }
