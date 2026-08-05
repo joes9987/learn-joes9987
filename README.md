@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EudaLearn
 
-## Getting Started
+Week 4 Ludwitt learning app for the Hult Summer Pilot — short builder-skills modules with a validated Ludwitt JWT launch and learning events.
 
-First, run the development server:
+**Production:** https://learn-joes9987.vercel.app  
+**Repo:** https://github.com/joes9987/learn-joes9987
+
+## Week 4 bar
+
+1. App registered on Ludwitt
+2. `/launch?token=` validates the platform JWT and opens a session
+3. Practice loop posts ≥1 non-heartbeat event per session (`lesson_started` / `quiz_submitted` / `lesson_completed`)
+4. Proof PR in the cohort repo with app ID, listing URL, metrics snapshot, promotion channels
+
+≥25 external users is a later snapshot gate — not required to merge the Sunday proof PR.
+
+## Local
 
 ```bash
+cp .env.example .env.local
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+With `ALLOW_DEV_LAUNCH=true` and Ludwitt secrets set, `POST /api/dev-launch` returns a `/launch?token=…` path for local wiring tests.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test
+npm run build
+```
 
-## Learn More
+## Reviewer
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [docs/REVIEWER.md](docs/REVIEWER.md).

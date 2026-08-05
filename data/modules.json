@@ -1,0 +1,141 @@
+[
+  {
+    "id": "prompt-briefs",
+    "title": "Write a shippable prompt brief",
+    "minutes": 8,
+    "xp": 40,
+    "summary": "Turn a vague feature idea into a brief an agent can execute without guessing.",
+    "lesson": [
+      "A good brief states the user, the job-to-be-done, and what done looks like.",
+      "Include constraints: stack, files you may touch, and what not to invent.",
+      "Add one acceptance check the agent can verify (route loads, test passes, form submits).",
+      "Prefer concrete nouns over vibes: “POST /api/events returns 202” beats “make it work.”"
+    ],
+    "quiz": [
+      {
+        "id": "q1",
+        "prompt": "Which brief is most shippable?",
+        "choices": [
+          "Make the learning app cooler with AI vibes.",
+          "Add /launch that verifies a Ludwitt JWT and redirects to /learn when valid.",
+          "Use best practices for auth somehow.",
+          "Refactor everything related to sessions."
+        ],
+        "answer": 1,
+        "explain": "It names the route, the verification step, and the success redirect."
+      },
+      {
+        "id": "q2",
+        "prompt": "What should a brief tell the agent not to do?",
+        "choices": [
+          "Nothing — agents should invent freely.",
+          "Invent deploy URLs or peer data that were not verified.",
+          "Run tests after changing code.",
+          "Keep diffs small."
+        ],
+        "answer": 1,
+        "explain": "Guardrails prevent confident fabrication."
+      }
+    ]
+  },
+  {
+    "id": "event-telemetry",
+    "title": "Instrument learning events",
+    "minutes": 10,
+    "xp": 50,
+    "summary": "Fire the right Ludwitt events so sessions count toward platform metrics.",
+    "lesson": [
+      "Launch creates a session id you reuse for every event in that visit.",
+      "Fire lesson_started when a module opens — not only on page load of marketing.",
+      "Fire quiz_submitted when the learner answers; include score in metadata if useful.",
+      "Fire lesson_completed when the module summary is reached. Heartbeats alone do not qualify a session."
+    ],
+    "quiz": [
+      {
+        "id": "q1",
+        "prompt": "Minimum non-heartbeat signal for a valid learning session?",
+        "choices": [
+          "Only session_heartbeat every 60s",
+          "At least one of lesson_started, quiz_submitted, or lesson_completed",
+          "Opening the homepage without launch",
+          "A GitHub star"
+        ],
+        "answer": 1,
+        "explain": "Platform pass evidence requires real learning events, not heartbeats alone."
+      },
+      {
+        "id": "q2",
+        "prompt": "Where should the Ludwitt api_key live?",
+        "choices": [
+          "In a public React component",
+          "In NEXT_PUBLIC_ env vars",
+          "Only on the server (e.g. /api/events proxy)",
+          "In the JWT payload"
+        ],
+        "answer": 2,
+        "explain": "Browser exposure would let anyone spoof events as your app."
+      }
+    ]
+  },
+  {
+    "id": "launch-trust",
+    "title": "Trust the Ludwitt launch JWT",
+    "minutes": 8,
+    "xp": 45,
+    "summary": "Validate HS256 tokens and reject anything that did not come from the launcher.",
+    "lesson": [
+      "Ludwitt redirects to your /launch?token=… with a short-lived HS256 JWT.",
+      "Verify signature with jwt_secret, check exp, and confirm app_id matches your registration.",
+      "On failure, show “Launch from Ludwitt” — do not silently create a guest that looks launched.",
+      "Store sub/email/session in an httpOnly cookie; never put api_key in that cookie."
+    ],
+    "quiz": [
+      {
+        "id": "q1",
+        "prompt": "Expired launch token should…",
+        "choices": [
+          "Still open /learn to be friendly",
+          "Be rejected with a clear launch-from-platform message",
+          "Refresh itself in the browser",
+          "Fall back to localStorage email"
+        ],
+        "answer": 1,
+        "explain": "Invalid tokens must not grant a learning session."
+      },
+      {
+        "id": "q2",
+        "prompt": "JWT payload field that identifies the Ludwitt user?",
+        "choices": ["iat", "sub", "alg", "kid"],
+        "answer": 1,
+        "explain": "sub is the platform user id used in event user_id."
+      }
+    ]
+  },
+  {
+    "id": "suite-thinking",
+    "title": "Ship as part of a suite",
+    "minutes": 7,
+    "xp": 35,
+    "summary": "Connect learning to the rest of the Euda surfaces without fake SSO claims.",
+    "lesson": [
+      "EudaLearn is the Phase 2 learning surface; EudaPM, EudaChat, and EudaMarket already cover work, chat, and showcase.",
+      "Deep-link from Market /suite so partners and peers can find the app — but counted users should enter via the Ludwitt listing/launcher.",
+      "Be honest about auth: Ludwitt JWT for launched sessions; per-host cookies elsewhere.",
+      "Promote the listing URL in cohort channels so later snapshots can measure adoption."
+    ],
+    "quiz": [
+      {
+        "id": "q1",
+        "prompt": "For future qualified-user counts, promote…",
+        "choices": [
+          "Only the raw Vercel URL in a private gist",
+          "The Ludwitt listing / launcher URL",
+          "A localhost tunnel",
+          "A screenshot with no URL"
+        ],
+        "answer": 1,
+        "explain": "Launcher entry is what ties users to platform metrics."
+      }
+    ]
+  }
+]
