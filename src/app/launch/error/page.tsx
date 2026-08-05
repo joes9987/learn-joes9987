@@ -20,7 +20,7 @@ export default async function LaunchErrorPage ({ searchParams }: Props) {
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
         <a
-          href="/api/auth/ludwitt"
+          href="/login"
           className="rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)]"
         >
           Sign in with Ludwitt

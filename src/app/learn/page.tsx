@@ -22,16 +22,15 @@ export default async function LearnIndexPage () {
           events.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          {oauthReady ? (
-            <a
-              href="/api/auth/ludwitt"
-              className="inline-flex rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)]"
-            >
-              Sign in with Ludwitt
-            </a>
-          ) : (
+          <a
+            href="/login"
+            className="inline-flex rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)] hover:bg-[var(--primary-hover)]"
+          >
+            Sign in with Ludwitt
+          </a>
+          {!oauthReady ? (
             <p className="text-sm text-[var(--muted)]">OAuth credentials not configured.</p>
-          )}
+          ) : null}
           {SITE.listingUrl ? (
             <a
               href={SITE.listingUrl}

@@ -23,8 +23,21 @@ export async function getValidAccessToken (): Promise<{
     return { accessToken: bundle.accessToken, refreshed: false, bundle }
   }
 
+  // Creator mint / test tokens may not include a real refresh_token.
+  if (bundle.refreshToken.startsWith('test_refresh_')) {
+    if (bundle.expiresAt > now) {
+      return { accessToken: bundle.accessToken, refreshed: false, bundle }
+    }
+    return null
+  }
+
   const refreshed = await refreshAccessToken(bundle.refreshToken)
-  if (!refreshed.ok) return null
+  if (!refreshed.ok) {
+    if (bundle.expiresAt > now) {
+      return { accessToken: bundle.accessToken, refreshed: false, bundle }
+    }
+    return null
+  }
 
   jar.set(
     LUDWITT_TOKEN_COOKIE,
