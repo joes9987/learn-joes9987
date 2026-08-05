@@ -1,15 +1,16 @@
 import Link from 'next/link'
 import { SITE } from '@/lib/site'
+import { ui } from '@/lib/ui'
 
 type Props = { searchParams: Promise<{ reason?: string }> }
 
 export default async function LaunchErrorPage ({ searchParams }: Props) {
   const { reason } = await searchParams
   return (
-    <div className="mx-auto max-w-lg rounded-3xl border border-[var(--border)] bg-[var(--card)] p-8">
-      <p className="text-xs font-semibold uppercase tracking-wide text-amber-300">Sign-in blocked</p>
-      <h1 className="mt-2 text-2xl font-bold">Sign in with Ludwitt</h1>
-      <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+    <div className={`${ui.cardElevated} mx-auto max-w-lg`}>
+      <p className={ui.eyebrow}>Sign-in blocked</p>
+      <h1 className={`${ui.pageTitle} mt-2`}>Sign in with Ludwitt</h1>
+      <p className={`mt-3 ${ui.pageSubtitle}`}>
         EudaLearn starts counted learning sessions via Ludwitt OAuth (or a valid platform launch token).
         {reason ? (
           <>
@@ -19,24 +20,15 @@ export default async function LaunchErrorPage ({ searchParams }: Props) {
         ) : null}
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
-        <a
-          href="/login"
-          className="rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)]"
-        >
+        <a href="/login" className={ui.btnPrimaryLg}>
           Sign in with Ludwitt
         </a>
         {SITE.listingUrl ? (
-          <a
-            href={SITE.listingUrl}
-            className="rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold"
-          >
+          <a href={SITE.listingUrl} className={ui.btnSecondary}>
             Marketplace listing
           </a>
         ) : null}
-        <Link
-          href="/"
-          className="rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold"
-        >
+        <Link href="/" className={ui.btnSecondary}>
           Home
         </Link>
       </div>

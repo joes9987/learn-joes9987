@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { IBM_Plex_Mono, IBM_Plex_Sans, Syne } from 'next/font/google'
 import { SiteChrome } from '@/components/SiteChrome'
+import { ThemeProvider } from '@/components/ThemeProvider'
 import { SITE } from '@/lib/site'
 import './globals.css'
 
@@ -34,10 +35,13 @@ export default function RootLayout ({ children }: LayoutProps<'/'>) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${syne.variable} ${plexSans.variable} ${plexMono.variable} h-full`}
     >
-      <body className="min-h-full antialiased">
-        <SiteChrome>{children}</SiteChrome>
+      <body className="min-h-full antialiased mesh-background">
+        <ThemeProvider>
+          <SiteChrome>{children}</SiteChrome>
+        </ThemeProvider>
       </body>
     </html>
   )

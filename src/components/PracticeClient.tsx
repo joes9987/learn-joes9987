@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useTransition } from 'react'
 import type { LearnModule } from '@/lib/modules'
+import { ui } from '@/lib/ui'
 
 type Stage = 'lesson' | 'quiz' | 'feedback' | 'summary'
 
@@ -117,39 +118,33 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--primary)]">
+      <div className={ui.card}>
+        <p className={ui.eyebrow}>
           {stage === 'lesson' ? 'Lesson' : stage === 'summary' ? 'Summary' : `Question ${qi + 1}/${total}`}
         </p>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight">{module.title}</h1>
+        <h1 className="font-display mt-2 text-2xl font-bold tracking-tight text-[var(--foreground)]">
+          {module.title}
+        </h1>
         <p className="mt-2 text-sm text-[var(--muted-foreground)]">{module.summary}</p>
-        {eventError ? (
-          <p className="mt-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">
-            Event note: {eventError}
-          </p>
-        ) : null}
+        {eventError ? <p className={`mt-3 ${ui.alertWarning}`}>Event note: {eventError}</p> : null}
       </div>
 
       {stage === 'lesson' ? (
-        <section className="rounded-2xl border border-[var(--border)] bg-[var(--card-solid)] p-6">
+        <section className={ui.cardSolid}>
           <ol className="list-decimal space-y-3 pl-5 text-sm leading-relaxed text-[var(--muted-foreground)]">
             {module.lesson.map((line) => (
               <li key={line}>{line}</li>
             ))}
           </ol>
-          <button
-            type="button"
-            className="mt-6 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)]"
-            onClick={() => setStage('quiz')}
-          >
+          <button type="button" className={`mt-6 ${ui.btnPrimaryLg}`} onClick={() => setStage('quiz')}>
             Start quiz
           </button>
         </section>
       ) : null}
 
       {stage === 'quiz' && question ? (
-        <section className="rounded-2xl border border-[var(--border)] bg-[var(--card-solid)] p-6">
-          <p className="text-base font-medium">{question.prompt}</p>
+        <section className={ui.cardSolid}>
+          <p className="text-base font-medium text-[var(--foreground)]">{question.prompt}</p>
           <ul className="mt-4 space-y-2">
             {question.choices.map((c, idx) => (
               <li key={c}>
@@ -158,8 +153,8 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
                   onClick={() => setChoice(idx)}
                   className={`w-full rounded-xl border px-4 py-3 text-left text-sm transition ${
                     choice === idx
-                      ? 'border-[var(--primary)] bg-[var(--accent-soft)]'
-                      : 'border-[var(--border)] hover:border-[var(--primary)]/50'
+                      ? 'border-[var(--primary)] bg-[var(--accent-soft)] text-[var(--foreground)]'
+                      : 'border-[var(--border)] bg-[var(--card-solid)] text-[var(--foreground)] hover:border-[var(--primary)]/50'
                   }`}
                 >
                   {c}
@@ -171,7 +166,7 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
             type="button"
             disabled={choice === null || pending}
             onClick={submitAnswer}
-            className="mt-6 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)] disabled:opacity-40"
+            className={`mt-6 ${ui.btnPrimaryLg}`}
           >
             Submit answer
           </button>
@@ -179,8 +174,10 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
       ) : null}
 
       {stage === 'feedback' && question ? (
-        <section className="rounded-2xl border border-[var(--border)] bg-[var(--card-solid)] p-6">
-          <p className={`text-lg font-semibold ${lastCorrect ? 'text-[var(--primary)]' : 'text-amber-300'}`}>
+        <section className={ui.cardSolid}>
+          <p
+            className={`text-lg font-semibold ${lastCorrect ? 'text-[var(--primary)]' : 'text-[var(--warning-fg)]'}`}
+          >
             {lastCorrect ? 'Correct' : 'Not quite'}
           </p>
           <p className="mt-2 text-sm text-[var(--muted-foreground)]">{question.explain}</p>
@@ -190,14 +187,12 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
               {coachTip}
             </p>
           ) : null}
-          {coachNote ? (
-            <p className="mt-3 text-xs text-[var(--muted)]">{coachNote}</p>
-          ) : null}
+          {coachNote ? <p className="mt-3 text-xs text-[var(--muted)]">{coachNote}</p> : null}
           <button
             type="button"
             disabled={pending}
             onClick={nextAfterFeedback}
-            className="mt-6 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)]"
+            className={`mt-6 ${ui.btnPrimaryLg}`}
           >
             {qi + 1 >= total ? 'See summary' : 'Next question'}
           </button>
@@ -205,18 +200,15 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
       ) : null}
 
       {stage === 'summary' ? (
-        <section className="rounded-2xl border border-[var(--border)] bg-[var(--card-solid)] p-6">
-          <p className="text-lg font-semibold">Module complete</p>
+        <section className={ui.cardSolid}>
+          <p className="text-lg font-semibold text-[var(--foreground)]">Module complete</p>
           <p className="mt-2 text-sm text-[var(--muted-foreground)]">
             Score {correctCount}/{total} ({scorePct}%). +{module.xp} XP toward your builder streak.
           </p>
           <p className="mt-3 text-xs text-[var(--muted)]">
             Events fired: lesson_started, quiz_submitted, lesson_completed (+ heartbeats while open).
           </p>
-          <a
-            href="/learn"
-            className="mt-6 inline-flex rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)]"
-          >
+          <a href="/learn" className={`mt-6 inline-flex ${ui.btnPrimaryLg}`}>
             Back to modules
           </a>
         </section>
