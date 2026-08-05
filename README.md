@@ -21,6 +21,24 @@ Week 4 Ludwitt learning app for the Hult Summer Pilot — short builder-skills m
 
 Curriculum host `api.ludwitt.hult` does not resolve in DNS. **Identity and listing** use Ludwitt Creator OAuth at `pitchrise.ludwitt.com`. **Learning-event telemetry** is app-owned (Supabase + `/api/platform/v1` metrics) until an official Hult events API is live.
 
+## Ludwitt docs (offline)
+
+Creator LE docs are gitignored under `.ludwitt/`. Re-fetch when integrating or after Ludwitt releases:
+
+```bash
+mkdir -p .ludwitt
+curl -sSfL https://pitchrise.ludwitt.com/docs/le/llms.txt -o .ludwitt/llms.txt
+curl -sSfL https://pitchrise.ludwitt.com/docs/le/quickstart.md -o .ludwitt/quickstart.md
+curl -sSfL https://pitchrise.ludwitt.com/docs/le/oauth.md -o .ludwitt/oauth.md
+curl -sSfL https://pitchrise.ludwitt.com/docs/le/credits.md -o .ludwitt/credits.md
+curl -sSfL https://pitchrise.ludwitt.com/docs/le/security.md -o .ludwitt/security.md
+curl -sSfL https://pitchrise.ludwitt.com/docs/le/rate-limits.md -o .ludwitt/rate-limits.md
+curl -sSfL https://pitchrise.ludwitt.com/docs/le/errors.md -o .ludwitt/errors.md
+curl -sSfL https://pitchrise.ludwitt.com/docs/le/openapi.yaml -o .ludwitt/openapi.yaml
+```
+
+Start agents on `.ludwitt/llms.txt`. OAuth base: `LUDWITT_OAUTH_BASE=https://pitchrise.ludwitt.com`.
+
 ## Local
 
 ```bash

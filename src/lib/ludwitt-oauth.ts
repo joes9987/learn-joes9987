@@ -18,8 +18,8 @@ export type LudwittUserInfo = {
 }
 
 export function oauthConfig () {
-  // www and pitchrise share the same OAuth API; prefer www (Creator host).
-  const base = (process.env.LUDWITT_OAUTH_BASE ?? 'https://www.ludwitt.com').replace(/\/$/, '')
+  // Creator docs host OAuth on pitchrise; www may alias the same APIs.
+  const base = (process.env.LUDWITT_OAUTH_BASE ?? 'https://pitchrise.ludwitt.com').replace(/\/$/, '')
   return {
     clientId: process.env.LUDWITT_CLIENT_ID ?? process.env.NEXT_PUBLIC_LUDWITT_CLIENT_ID ?? '',
     clientSecret: process.env.LUDWITT_CLIENT_SECRET ?? '',

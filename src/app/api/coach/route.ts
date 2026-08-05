@@ -52,7 +52,7 @@ export async function POST (request: Request) {
       return NextResponse.json(
         {
           error:
-            "You're out of Ludwitt credits for third-party apps — top up at https://www.ludwitt.com/account/credits",
+            "You're out of Ludwitt credits for third-party apps — top up at https://pitchrise.ludwitt.com/account/credits",
           code: 'INSUFFICIENT_PAID_CREDITS',
           spendableCents: balance.ok ? balance.spendableCents : undefined
         },

@@ -69,7 +69,7 @@ export function LoginClient ({
             Open your app in{' '}
             <a
               className={ui.linkAccent}
-              href="https://www.ludwitt.com/creator/apps"
+              href="https://pitchrise.ludwitt.com/learning-engineers"
               target="_blank"
               rel="noreferrer"
             >
