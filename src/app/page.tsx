@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { listModules } from '@/lib/modules'
+import { listModules, TRACK, totalTrackXp } from '@/lib/modules'
 import { SITE } from '@/lib/site'
 import { ui } from '@/lib/ui'
 
@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic'
 export default function HomePage () {
   const modules = listModules()
   const listing = SITE.listingUrl
+  const minutes = modules.reduce((s, m) => s + m.minutes, 0)
 
   return (
     <div className="space-y-10">
@@ -18,7 +19,8 @@ export default function HomePage () {
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-[var(--muted-foreground)]">{SITE.tagline}</p>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--muted)]">
-          {SITE.description} Prefer the marketplace listing when sharing with peers.
+          {TRACK.outcome} {modules.length} modules · ~{minutes} min · {totalTrackXp()} XP. Prefer the
+          marketplace listing when sharing with peers.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link href="/learn" className={ui.btnPrimaryLg}>
@@ -36,9 +38,9 @@ export default function HomePage () {
       </section>
 
       <section>
-        <h2 className={ui.pageTitle}>Modules</h2>
+        <h2 className={ui.pageTitle}>{TRACK.title}</h2>
         <p className={`mt-2 ${ui.pageSubtitle}`}>
-          Four short drills. Sign in once, then work through them at your pace.
+          Skills in order: {modules.map((m) => m.skill).join(' → ')}.
         </p>
         <ul className="mt-4 grid gap-4 sm:grid-cols-2">
           {modules.map((m) => (
@@ -48,7 +50,7 @@ export default function HomePage () {
                 className={`${ui.card} block transition hover:border-[var(--primary)]`}
               >
                 <p className="text-xs text-[var(--muted)]">
-                  {m.minutes} min · {m.xp} XP
+                  {m.order}. {m.skill} · {m.minutes} min · {m.xp} XP
                 </p>
                 <h3 className="mt-1 font-semibold text-[var(--foreground)]">{m.title}</h3>
                 <p className="mt-2 text-sm text-[var(--muted-foreground)]">{m.summary}</p>

@@ -1,10 +1,12 @@
 [
   {
     "id": "prompt-briefs",
+    "order": 1,
+    "skill": "Briefing",
     "title": "Write a shippable prompt brief",
     "minutes": 8,
     "xp": 40,
-    "summary": "You'll turn a vague feature idea into a brief an agent can execute without guessing.",
+    "summary": "Turn a vague feature idea into a brief an agent can execute without guessing.",
     "lesson": [
       "A good brief states the user, the job-to-be-done, and what done looks like.",
       "Include constraints: stack, files you may touch, and what not to invent.",
@@ -35,58 +37,139 @@
         ],
         "answer": 1,
         "explain": "Guardrails prevent confident fabrication."
+      },
+      {
+        "id": "q3",
+        "prompt": "Best acceptance check to include in a brief?",
+        "choices": [
+          "“Make it feel premium.”",
+          "“npm test passes and /learn returns 200 when signed in.”",
+          "“Use clean architecture.”",
+          "“Improve DX somehow.”"
+        ],
+        "answer": 1,
+        "explain": "Verifiable outcomes beat subjective vibes."
       }
     ]
   },
   {
-    "id": "event-telemetry",
-    "title": "Instrument learning events",
-    "minutes": 10,
-    "xp": 50,
-    "summary": "You'll know which learning events to fire so sessions count toward platform metrics.",
+    "id": "api-contracts",
+    "order": 2,
+    "skill": "APIs",
+    "title": "Design a tiny API contract",
+    "minutes": 9,
+    "xp": 45,
+    "summary": "Specify routes, status codes, and payloads so agents and teammates don’t invent shapes.",
     "lesson": [
-      "Launch creates a session id you reuse for every event in that visit.",
-      "Fire lesson_started when a module opens — not only on page load of marketing.",
-      "Fire quiz_submitted when the learner answers; include score in metadata if useful.",
-      "Fire lesson_completed when the module summary is reached. Heartbeats alone do not qualify a session."
+      "Name the method + path first: POST /api/events, GET /api/health.",
+      "Document happy-path status codes (200/202) and auth failures (401/403).",
+      "Write one example JSON request and response — not a 20-field schema novel.",
+      "Keep secrets server-side; browsers call your proxy, not the upstream with the api key."
     ],
     "quiz": [
       {
         "id": "q1",
-        "prompt": "Minimum non-heartbeat signal for a valid learning session?",
+        "prompt": "Clearest contract line?",
         "choices": [
-          "Only session_heartbeat every 60s",
-          "At least one of lesson_started, quiz_submitted, or lesson_completed",
-          "Opening the homepage without launch",
-          "A GitHub star"
+          "Make an events endpoint.",
+          "POST /api/events → 202 { ok: true } when session is valid; 401 otherwise.",
+          "Use REST best practices.",
+          "Return JSON somehow."
         ],
         "answer": 1,
-        "explain": "Platform pass evidence requires real learning events, not heartbeats alone."
+        "explain": "Path, status, and auth condition are explicit."
       },
       {
         "id": "q2",
-        "prompt": "Where should the Ludwitt api_key live?",
+        "prompt": "Where should upstream API keys be used?",
         "choices": [
-          "In a public React component",
+          "In the browser fetch headers",
           "In NEXT_PUBLIC_ env vars",
-          "Only on the server (e.g. /api/events proxy)",
-          "In the JWT payload"
+          "Only in server routes / proxies",
+          "In localStorage for convenience"
         ],
         "answer": 2,
-        "explain": "Browser exposure would let anyone spoof events as your app."
+        "explain": "Public exposure lets anyone impersonate your app."
+      },
+      {
+        "id": "q3",
+        "prompt": "Why include one sample payload?",
+        "choices": [
+          "To pad the README",
+          "So agents and humans share the same field names",
+          "Because OpenAPI forbids prose",
+          "To avoid writing tests"
+        ],
+        "answer": 1,
+        "explain": "Examples prevent invented field names."
+      }
+    ]
+  },
+  {
+    "id": "auth-sessions",
+    "order": 3,
+    "skill": "Auth",
+    "title": "Own the session cookie",
+    "minutes": 9,
+    "xp": 45,
+    "summary": "Know what belongs in an httpOnly session versus what must stay off the client.",
+    "lesson": [
+      "After Ludwitt (or any IdP) succeeds, store user id + email in a signed httpOnly cookie.",
+      "Never put api keys, refresh secrets, or long-lived bearer tokens in localStorage for “ease.”",
+      "Bind server actions to the cookie session — ignore spoofed user_id from the request body.",
+      "Expire sessions; expired auth should send people back to sign-in, not silently invent a guest."
+    ],
+    "quiz": [
+      {
+        "id": "q1",
+        "prompt": "Safest place for a learning session identity?",
+        "choices": [
+          "Unsigned localStorage JSON",
+          "Signed httpOnly cookie",
+          "Query string on every link",
+          "A public GitHub gist"
+        ],
+        "answer": 1,
+        "explain": "httpOnly + signature resists XSS theft and tampering."
+      },
+      {
+        "id": "q2",
+        "prompt": "Client posts user_id: \"admin\". Server should…",
+        "choices": [
+          "Trust it if the JSON parses",
+          "Overwrite with the session’s user id",
+          "Echo it into metrics for fun",
+          "Store it as the new api key"
+        ],
+        "answer": 1,
+        "explain": "Never trust client-supplied identity for privileged writes."
+      },
+      {
+        "id": "q3",
+        "prompt": "Refresh tokens for Ludwitt AI calls belong…",
+        "choices": [
+          "In a public React context",
+          "In an httpOnly / server-only cookie store",
+          "In the page title",
+          "In CSS variables"
+        ],
+        "answer": 1,
+        "explain": "Tokens are secrets; keep them off the JS heap when possible."
       }
     ]
   },
   {
     "id": "launch-trust",
+    "order": 4,
+    "skill": "Launch",
     "title": "Trust the Ludwitt launch JWT",
     "minutes": 8,
     "xp": 45,
-    "summary": "You'll validate launch tokens and reject anything that did not come from the launcher.",
+    "summary": "Validate launch tokens and reject anything that did not come from the launcher.",
     "lesson": [
-      "Ludwitt redirects to your /launch?token=… with a short-lived HS256 JWT.",
+      "Ludwitt can redirect to /launch?token=… with a short-lived HS256 JWT.",
       "Verify signature with jwt_secret, check exp, and confirm app_id matches your registration.",
-      "On failure, show “Launch from Ludwitt” — do not silently create a guest that looks launched.",
+      "On failure, show a clear “sign in / launch” message — do not silently create a fake launched guest.",
       "Store sub/email/session in an httpOnly cookie; never put api_key in that cookie."
     ],
     "quiz": [
@@ -108,26 +191,145 @@
         "choices": ["iat", "sub", "alg", "kid"],
         "answer": 1,
         "explain": "sub is the platform user id used in event user_id."
+      },
+      {
+        "id": "q3",
+        "prompt": "If app_id in the token doesn’t match your registration…",
+        "choices": [
+          "Ignore it — email is enough",
+          "Reject the launch",
+          "Rewrite the token in the browser",
+          "Treat it as a guest with XP"
+        ],
+        "answer": 1,
+        "explain": "Wrong app_id means the token wasn’t minted for you."
+      }
+    ]
+  },
+  {
+    "id": "event-telemetry",
+    "order": 5,
+    "skill": "Telemetry",
+    "title": "Instrument learning events",
+    "minutes": 10,
+    "xp": 50,
+    "summary": "Fire the right events so sessions count toward platform metrics.",
+    "lesson": [
+      "Reuse one session id for every event in a visit.",
+      "Fire lesson_started when a module opens — not only on marketing page load.",
+      "Fire quiz_submitted when the learner answers; include score in metadata if useful.",
+      "Fire lesson_completed on the summary. Heartbeats alone do not qualify a session."
+    ],
+    "quiz": [
+      {
+        "id": "q1",
+        "prompt": "Minimum non-heartbeat signal for a valid learning session?",
+        "choices": [
+          "Only session_heartbeat every 60s",
+          "At least one of lesson_started, quiz_submitted, or lesson_completed",
+          "Opening the homepage without launch",
+          "A GitHub star"
+        ],
+        "answer": 1,
+        "explain": "Platform pass evidence requires real learning events."
+      },
+      {
+        "id": "q2",
+        "prompt": "Where should the Ludwitt api_key live?",
+        "choices": [
+          "In a public React component",
+          "In NEXT_PUBLIC_ env vars",
+          "Only on the server (e.g. /api/events proxy)",
+          "In the JWT payload"
+        ],
+        "answer": 2,
+        "explain": "Browser exposure would let anyone spoof events as your app."
+      },
+      {
+        "id": "q3",
+        "prompt": "Why attach moduleId on lesson_completed?",
+        "choices": [
+          "For CSS theming",
+          "So progress/XP can credit the right module",
+          "Because SQL requires it globally",
+          "To bypass auth"
+        ],
+        "answer": 1,
+        "explain": "Progress systems key off module identity in metadata."
+      }
+    ]
+  },
+  {
+    "id": "deploy-smoke",
+    "order": 6,
+    "skill": "Deploy",
+    "title": "Ship a deploy smoke check",
+    "minutes": 8,
+    "xp": 40,
+    "summary": "Prove production is alive with a boring, reliable health check — not vibes.",
+    "lesson": [
+      "Expose GET /api/health (or similar) that returns app identity and critical config flags — no secrets.",
+      "After every prod deploy, hit the health URL and the primary user path once.",
+      "Feature probes beat “it compiled”: signed-in /learn loading is stronger than a green build log.",
+      "When promoting links, prefer the marketplace/listing URL for counted users, not only the raw host."
+    ],
+    "quiz": [
+      {
+        "id": "q1",
+        "prompt": "Best post-deploy smoke?",
+        "choices": [
+          "Tweet “shipped” with no URL",
+          "curl /api/health and open the signed-in practice path",
+          "Only check TypeScript locally",
+          "Restart the laptop"
+        ],
+        "answer": 1,
+        "explain": "Production HTTP proof beats local compile confidence."
+      },
+      {
+        "id": "q2",
+        "prompt": "Health responses should include…",
+        "choices": [
+          "Client secrets in plaintext",
+          "App name + non-secret readiness flags",
+          "Full database dumps",
+          "Other users’ emails"
+        ],
+        "answer": 1,
+        "explain": "Useful for ops; never leak secrets."
+      },
+      {
+        "id": "q3",
+        "prompt": "For Ludwitt adoption metrics, promote…",
+        "choices": [
+          "A localhost tunnel",
+          "The marketplace / listing URL",
+          "A screenshot only",
+          "An expired preview deployment"
+        ],
+        "answer": 1,
+        "explain": "Listing/launcher entry ties users to platform attribution."
       }
     ]
   },
   {
     "id": "suite-thinking",
+    "order": 7,
+    "skill": "Suite",
     "title": "Ship as part of a suite",
-    "minutes": 7,
-    "xp": 35,
-    "summary": "You'll connect learning to Market, PM, and Chat without fake SSO claims.",
+    "minutes": 8,
+    "xp": 40,
+    "summary": "Connect learning to Market, PM, and Chat without fake SSO claims.",
     "lesson": [
-      "EudaLearn is the Phase 2 learning surface; EudaPM, EudaChat, and EudaMarket already cover work, chat, and showcase.",
-      "Deep-link from Market /suite so partners and peers can find the app — but counted users should enter via the Ludwitt listing/launcher.",
-      "Be honest about auth: Ludwitt JWT for launched sessions; per-host cookies elsewhere.",
-      "Promote the listing URL in cohort channels so later snapshots can measure adoption.",
-      "One suite story beats four orphan demos: same brand, clear handoffs, no invented shared login."
+      "EudaLearn is the learning surface; EudaPM, EudaChat, and EudaMarket cover work, chat, and showcase.",
+      "Deep-link from Market /suite so people can find Learn — counted users should still enter via Ludwitt when required.",
+      "Be honest about auth: Ludwitt for Learn sessions; per-host cookies elsewhere — no invented cross-app SSO.",
+      "One suite story beats four orphan demos: shared brand, clear handoffs, real links."
     ],
     "quiz": [
       {
         "id": "q1",
-        "prompt": "For future qualified-user counts, promote…",
+        "prompt": "For qualified-user counts, promote…",
         "choices": [
           "Only the raw Vercel URL in a private gist",
           "The Ludwitt listing / launcher URL",
@@ -135,19 +337,84 @@
           "A screenshot with no URL"
         ],
         "answer": 1,
-        "explain": "Launcher entry is what ties users to platform metrics."
+        "explain": "Launcher entry ties users to platform metrics."
       },
       {
         "id": "q2",
-        "prompt": "What should you avoid claiming across EudaMarket, EudaPM, EudaChat, and EudaLearn?",
+        "prompt": "What should you avoid claiming across Euda apps?",
         "choices": [
-          "That they share branding and deep links",
+          "Shared branding and deep links",
           "That they are one product suite for the pilot",
-          "That they share a single SSO session cookie across every host",
+          "That they share a single SSO cookie across every host",
           "That learners should prefer the Ludwitt listing for counted use"
         ],
         "answer": 2,
-        "explain": "Auth is per host / Ludwitt launch — do not invent cross-app SSO."
+        "explain": "Auth is per host / Ludwitt launch — don’t invent SSO."
+      },
+      {
+        "id": "q3",
+        "prompt": "Best suite handoff from Market?",
+        "choices": [
+          "A broken iframe with no link",
+          "A clear CTA to the Learn listing/login",
+          "Copy-pasting the database URL",
+          "Asking users to guess the subdomain"
+        ],
+        "answer": 1,
+        "explain": "Explicit CTAs are how distribution works."
+      }
+    ]
+  },
+  {
+    "id": "feedback-loops",
+    "order": 8,
+    "skill": "Feedback",
+    "title": "Close the feedback loop",
+    "minutes": 8,
+    "xp": 40,
+    "summary": "Use coach tips, quizzes, and human review without treating any single signal as absolute truth.",
+    "lesson": [
+      "Automated coach tips are suggestions — schema-validate model output and degrade if the proxy fails.",
+      "Quiz explanations teach the rule; scores alone don’t prove mastery.",
+      "For product work, prefer written review + a live deploy over emoji reactions.",
+      "When credits are empty, keep the core lesson usable — never block learning on the tip."
+    ],
+    "quiz": [
+      {
+        "id": "q1",
+        "prompt": "If the AI coach returns 402 insufficient credits…",
+        "choices": [
+          "Crash the quiz",
+          "Show a calm message and continue with the explanation",
+          "Delete the user’s progress",
+          "Invent a tip client-side"
+        ],
+        "answer": 1,
+        "explain": "Core practice must work when the smart layer is off."
+      },
+      {
+        "id": "q2",
+        "prompt": "Strongest evidence a feature works?",
+        "choices": [
+          "A thumbs-up emoji with no link",
+          "A written note plus a working deploy URL",
+          "“LGTM” on an empty PR",
+          "A vibe check in chat"
+        ],
+        "answer": 1,
+        "explain": "Review + live proof beats empty praise."
+      },
+      {
+        "id": "q3",
+        "prompt": "Model coach output should be…",
+        "choices": [
+          "Piped straight to the UI with no checks",
+          "Validated / bounded before display",
+          "Stored as the user’s password",
+          "Used to skip the quiz entirely"
+        ],
+        "answer": 1,
+        "explain": "Untrusted model text needs a guardrail."
       }
     ]
   }

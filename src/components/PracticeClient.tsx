@@ -211,14 +211,21 @@ export function PracticeClient ({ module }: { module: LearnModule }) {
         <section className={ui.cardSolid}>
           <p className="text-lg font-semibold text-[var(--foreground)]">Module complete</p>
           <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-            Score {correctCount}/{total} ({scorePct}%). +{module.xp} XP for this module.
+            Score {correctCount}/{total} ({scorePct}%). +{module.xp} XP toward{' '}
+            <span className="text-[var(--foreground)]">Ship with AI tools</span>
+            {module.skill ? ` · ${module.skill}` : ''}.
           </p>
           <p className="mt-3 text-xs text-[var(--muted)]">
-            Session recorded for your Ludwitt practice.
+            Session recorded for your Ludwitt practice. XP appears on your profile once.
           </p>
-          <a href="/learn" className={`mt-6 inline-flex ${ui.btnPrimaryLg}`}>
-            Back to modules
-          </a>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a href="/profile" className={ui.btnPrimaryLg}>
+              View profile & XP
+            </a>
+            <a href="/learn" className={ui.btnSecondary}>
+              Back to path
+            </a>
+          </div>
         </section>
       ) : null}
     </div>

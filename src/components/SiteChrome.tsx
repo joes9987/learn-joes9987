@@ -1,14 +1,21 @@
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { getSession } from '@/lib/session'
 import { SITE } from '@/lib/site'
 import { ui } from '@/lib/ui'
 
-const NAV = [
-  { href: '/learn', label: 'Learn' },
-  { href: '/login', label: 'Sign in' }
-]
+export async function SiteChrome ({ children }: { children: React.ReactNode }) {
+  const session = await getSession()
+  const nav = session
+    ? [
+        { href: '/learn', label: 'Learn' },
+        { href: '/profile', label: 'Profile' }
+      ]
+    : [
+        { href: '/learn', label: 'Learn' },
+        { href: '/login', label: 'Sign in' }
+      ]
 
-export function SiteChrome ({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-full flex-col">
       <header className="app-header sticky top-0 z-40">
@@ -22,7 +29,7 @@ export function SiteChrome ({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
           <nav className="hidden items-center gap-1 sm:flex" aria-label="Primary">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link key={item.href} href={item.href} className={ui.navLink}>
                 {item.label}
               </Link>
@@ -33,6 +40,11 @@ export function SiteChrome ({ children }: { children: React.ReactNode }) {
           </nav>
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            {session ? (
+              <Link href="/profile" className={ui.btnSecondary}>
+                Profile
+              </Link>
+            ) : null}
             {SITE.listingUrl ? (
               <a
                 href={SITE.listingUrl}
@@ -49,7 +61,7 @@ export function SiteChrome ({ children }: { children: React.ReactNode }) {
           className="mx-auto flex max-w-5xl flex-wrap items-center gap-1 px-4 pb-3 sm:hidden sm:px-6"
           aria-label="Primary mobile"
         >
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Link key={item.href} href={item.href} className={ui.navLink}>
               {item.label}
             </Link>
