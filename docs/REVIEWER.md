@@ -12,21 +12,19 @@ Client ID: `le_d0e87dbc215bdf4d90eaa7`
 | Health | `/api/health` → `app: "eudalearn"`, `oauthConfigured: true`, `oauthBase: pitchrise…` |
 | OAuth gate | `/learn` without session → Sign in to practice |
 | OAuth | `/api/auth/ludwitt` → Ludwitt authorize → `/auth/callback` → `/learn` |
-| Test token | `/login` → “Having trouble signing in?” → mint `lt_…` → Continue |
+| Privacy | `/privacy` |
 | Practice | `/learn/[moduleId]` — lesson → quiz → summary |
-| Events | Server proxy `POST /api/events` (api keys never in browser) |
-| Coach | After quiz answer, `POST /api/coach` via Ludwitt AI proxy (Test mode or paid credits) |
+| Events | Server proxy `POST /api/events` (api keys never in browser); metadata includes `campaign: p2-venture` |
+| Coach | After quiz answer, `POST /api/coach` via Ludwitt AI proxy |
 
-## OAuth note (platform)
+## OAuth note
 
-As of the current Creator LE surface, `POST /api/oauth/token` may return `invalid_client` for registered apps even with a valid client id/secret. Browser authorize (`GET /oauth/authorize`) still loads.
-
-**Workaround for graders:** Ludwitt Creator → your app → **Mint test token** → paste on `/login` under “Having trouble signing in?”. That token is a real access token and powers `/api/coach`.
+Creator app is **approved**. Token exchange accepts the client (`invalid_grant` on a fake code; previously `invalid_client`). Prefer **Sign in with Ludwitt**. Mint-test-token remains under “Having trouble signing in?” for graders only.
 
 ## Integration contract
 
 - **Primary:** Ludwitt Creator OAuth (`profile credits:read credits:spend`) at `pitchrise.ludwitt.com`
 - Session cookie keyed on Ludwitt `sub` + email
 - Events: `lesson_started`, `quiz_submitted`, `lesson_completed`, optional `session_heartbeat`
+- Metrics: `GET /api/platform/v1/apps/{appId}/metrics` (app-owned Supabase store)
 - Env: `LUDWITT_CLIENT_ID`, `LUDWITT_CLIENT_SECRET`, `SESSION_SECRET`, `NEXT_PUBLIC_LUDWITT_LISTING_URL`, `LUDWITT_OAUTH_BASE`
-- Optional legacy JWT launch still supported when `LUDWITT_JWT_SECRET` / `LUDWITT_APP_ID` are set

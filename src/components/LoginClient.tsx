@@ -40,7 +40,8 @@ export function LoginClient ({
         <p className={ui.eyebrow}>Ludwitt</p>
         <h1 className={`${ui.pageTitle} mt-2 text-3xl`}>Sign in</h1>
         <p className={`mt-3 ${ui.pageSubtitle}`}>
-          Use your Ludwitt account so practice sessions and coach tips are attributed to you.
+          EudaLearn is listed on the Ludwitt marketplace. Sign in with Ludwitt so practice sessions
+          and coach tips are attributed to you.
         </p>
 
         {oauthReady ? (
@@ -60,9 +61,9 @@ export function LoginClient ({
           </summary>
           <div className="mt-3 space-y-3">
             <p className="text-sm text-[var(--muted-foreground)]">
-              You can continue with a Ludwitt Creator test token (starts with{' '}
-              <span className="font-mono">lt_</span>). Graders and creators: mint one from your app
-              settings, paste it here, then continue.
+              Prefer the Ludwitt button above. If you need a Creator test token (starts with{' '}
+              <span className="font-mono">lt_</span>) for grading or local checks, mint one from your
+              app settings, paste it here, then continue.
             </p>
             <ol className="list-decimal space-y-1 pl-5 text-sm text-[var(--muted-foreground)]">
               <li>

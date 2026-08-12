@@ -85,6 +85,9 @@ export function SiteChrome ({ children }: { children: React.ReactNode }) {
                 Ludwitt listing
               </a>
             ) : null}
+            <Link className={ui.linkAccent} href="/privacy">
+              Privacy
+            </Link>
           </div>
         </div>
       </footer>

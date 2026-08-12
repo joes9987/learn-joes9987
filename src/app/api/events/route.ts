@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server'
 import { parseEventBody, postLudwittEvent } from '@/lib/ludwitt'
 import { getSession } from '@/lib/session'
+import { withVentureMetadata } from '@/lib/venture'
 
 export async function POST (request: Request) {
   const session = await getSession()
   if (!session) {
-    return NextResponse.json({ error: 'Launch from Ludwitt to start a session' }, { status: 401 })
+    return NextResponse.json({ error: 'Sign in with Ludwitt to start a session' }, { status: 401 })
   }
 
   const body = await request.json().catch(() => null)
@@ -18,7 +19,8 @@ export async function POST (request: Request) {
   const payload = {
     ...parsed.data,
     user_id: session.userId,
-    session_id: session.sessionId
+    session_id: session.sessionId,
+    metadata: withVentureMetadata(parsed.data.metadata)
   }
 
   const result = await postLudwittEvent(payload)

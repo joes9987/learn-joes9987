@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { isExcludedFromQualified, VENTURE_CAMPAIGN } from '@/lib/venture'
 
 function admin () {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -27,30 +28,49 @@ export async function recordPlatformEvent (input: {
   return { ok: true as const }
 }
 
-export async function metricsForApp (appId: string) {
-  const sb = admin()
-  if (!sb) return null
-  const { data, error } = await sb
-    .from('eudalearn_events')
-    .select('user_id, event, session_id')
-    .eq('app_id', appId)
-  if (error) return null
-  const rows = data ?? []
-  const users = new Set(rows.map((r) => r.user_id))
-  const qualifiedUsers = new Set(
-    rows.filter((r) => r.event !== 'session_heartbeat').map((r) => r.user_id)
-  )
-  const qualifiedSessions = new Set(
-    rows
-      .filter((r) => r.event !== 'session_heartbeat')
-      .map((r) => `${r.user_id}:${r.session_id}`)
+type EventRow = {
+  user_id: string
+  event: string
+  session_id: string
+  metadata?: Record<string, unknown> | null
+}
+
+function tally (rows: EventRow[]) {
+  const external = rows.filter((r) => !isExcludedFromQualified(r.user_id))
+  const qualified = external.filter((r) => r.event !== 'session_heartbeat')
+  const ventureQualified = qualified.filter(
+    (r) => (r.metadata as { campaign?: string } | null)?.campaign === VENTURE_CAMPAIGN
   )
   return {
-    app_id: appId,
-    unique_users: users.size,
-    qualified_users: qualifiedUsers.size,
-    qualified_sessions: qualifiedSessions.size,
-    events: rows.length,
+    unique_users: new Set(external.map((r) => r.user_id)).size,
+    qualified_users: new Set(qualified.map((r) => r.user_id)).size,
+    qualified_sessions: new Set(qualified.map((r) => `${r.user_id}:${r.session_id}`)).size,
+    venture_qualified_users: new Set(ventureQualified.map((r) => r.user_id)).size,
+    events: external.length
+  }
+}
+
+export async function metricsForApp (appId: string | string[]) {
+  const sb = admin()
+  if (!sb) return null
+  const ids = (Array.isArray(appId) ? appId : [appId]).filter(Boolean)
+  if (ids.length === 0) return null
+  const { data, error } = await sb
+    .from('eudalearn_events')
+    .select('user_id, event, session_id, metadata')
+    .in('app_id', ids)
+  if (error) return null
+  const rows = (data ?? []) as EventRow[]
+  const t = tally(rows)
+  return {
+    app_id: ids[0],
+    app_ids: ids,
+    unique_users: t.unique_users,
+    qualified_users: t.qualified_users,
+    qualified_sessions: t.qualified_sessions,
+    venture_qualified_users: t.venture_qualified_users,
+    venture_campaign: VENTURE_CAMPAIGN,
+    events: t.events,
     snapshot_at: new Date().toISOString()
   }
 }
