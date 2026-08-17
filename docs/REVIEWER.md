@@ -8,7 +8,8 @@ Client ID: `le_d0e87dbc215bdf4d90eaa7`
 
 | Check | Where |
 |-------|-------|
-| Landing | `/` — Start practicing + marketplace link |
+| Landing | `/` — Start practicing + Investor demo + marketplace link |
+| Investor demo | `/demo` — no login; `#practice` / `#project` hashes; does **not** POST `/api/events` or `/api/coach` |
 | Health | `/api/health` → `app: "eudalearn"`, `oauthConfigured: true`, `oauthBase: pitchrise…` |
 | OAuth gate | `/learn` without session → Sign in to practice |
 | OAuth | `/api/auth/ludwitt` → Ludwitt authorize → `/auth/callback` → `/learn` |
