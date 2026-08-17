@@ -1,4 +1,7 @@
 import Link from 'next/link'
+import { NavLinks } from '@/components/NavLinks'
+import { NewTabHint } from '@/components/NewTabHint'
+import { SkipToContent } from '@/components/SkipToContent'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { getSession } from '@/lib/session'
 import { SITE } from '@/lib/site'
@@ -9,15 +12,19 @@ export async function SiteChrome ({ children }: { children: React.ReactNode }) {
   const nav = session
     ? [
         { href: '/learn', label: 'Learn' },
+        { href: '/project', label: 'Project' },
         { href: '/profile', label: 'Profile' }
       ]
     : [
         { href: '/learn', label: 'Learn' },
-        { href: '/login', label: 'Sign in' }
+        { href: '/demo', label: 'Demo' },
+        { href: '/login', label: 'Sign in' },
+        { href: '/signup', label: 'Sign up' }
       ]
 
   return (
     <div className="flex min-h-full flex-col">
+      <SkipToContent />
       <header className="app-header sticky top-0 z-40">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link href="/" className="flex shrink-0 items-center gap-2">
@@ -28,16 +35,13 @@ export async function SiteChrome ({ children }: { children: React.ReactNode }) {
               <span className="text-gradient">{SITE.name}</span>
             </span>
           </Link>
-          <nav className="hidden items-center gap-1 sm:flex" aria-label="Primary">
-            {nav.map((item) => (
-              <Link key={item.href} href={item.href} className={ui.navLink}>
-                {item.label}
-              </Link>
-            ))}
+          <div className="hidden items-center gap-1 sm:flex">
+            <NavLinks items={nav} ariaLabel="Primary" />
             <a href={SITE.marketUrl} target="_blank" rel="noreferrer" className={ui.navLink}>
               EudaMarket
+              <NewTabHint />
             </a>
-          </nav>
+          </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             {session ? (
@@ -53,25 +57,22 @@ export async function SiteChrome ({ children }: { children: React.ReactNode }) {
                 className={ui.btnPrimary}
               >
                 Marketplace
+                <NewTabHint />
               </a>
             ) : null}
           </div>
         </div>
-        <nav
-          className="mx-auto flex max-w-5xl flex-wrap items-center gap-1 px-4 pb-3 sm:hidden sm:px-6"
-          aria-label="Primary mobile"
-        >
-          {nav.map((item) => (
-            <Link key={item.href} href={item.href} className={ui.navLink}>
-              {item.label}
-            </Link>
-          ))}
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-1 px-4 pb-3 sm:hidden sm:px-6">
+          <NavLinks items={nav} ariaLabel="Primary mobile" />
           <a href={SITE.marketUrl} target="_blank" rel="noreferrer" className={ui.navLink}>
             EudaMarket
+            <NewTabHint />
           </a>
-        </nav>
+        </div>
       </header>
-      <main className={`flex-1 ${ui.pageMain}`}>{children}</main>
+      <main id="main-content" tabIndex={-1} className={`flex-1 outline-none ${ui.pageMain}`}>
+        {children}
+      </main>
       <footer className="mt-8 border-t border-[var(--border)]">
         <div className="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-start sm:justify-between sm:px-6">
           <div>
@@ -85,18 +86,28 @@ export async function SiteChrome ({ children }: { children: React.ReactNode }) {
           <div className="flex flex-wrap gap-3 text-sm">
             <a className={ui.linkAccent} href={SITE.marketUrl} target="_blank" rel="noreferrer">
               EudaMarket
+              <NewTabHint />
             </a>
             <a className={ui.linkAccent} href={SITE.pmUrl} target="_blank" rel="noreferrer">
               EudaPM
+              <NewTabHint />
             </a>
             <a className={ui.linkAccent} href={SITE.chatUrl} target="_blank" rel="noreferrer">
               EudaChat
+              <NewTabHint />
             </a>
             {SITE.listingUrl ? (
               <a className={ui.linkAccent} href={SITE.listingUrl} target="_blank" rel="noreferrer">
                 Ludwitt listing
+                <NewTabHint />
               </a>
             ) : null}
+            <Link className={ui.linkAccent} href="/demo">
+              Demo
+            </Link>
+            <Link className={ui.linkAccent} href="/accessibility">
+              Accessibility
+            </Link>
             <Link className={ui.linkAccent} href="/privacy">
               Privacy
             </Link>

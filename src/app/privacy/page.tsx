@@ -11,7 +11,7 @@ export default function PrivacyPage () {
   return (
     <article className={`${ui.cardElevated} prose-invert max-w-3xl space-y-4`}>
       <p className={ui.eyebrow}>Legal</p>
-      <h1 className={`${ui.pageTitle} text-3xl`}>Privacy</h1>
+      <h1 className={`${ui.pageTitle} text-3xl leading-tight`}>Privacy</h1>
       <p className={ui.pageSubtitle}>
         {SITE.name} is a Hult Summer Pilot learning app. This page explains what we store and why.
       </p>

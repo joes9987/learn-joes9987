@@ -20,9 +20,10 @@ export function ThemeToggle ({ className = '' }: { className?: string }) {
       type="button"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-pressed={isDark}
       className={`inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-strong)] bg-[var(--card-solid)] text-[var(--muted-foreground)] transition hover:border-[var(--primary)] hover:text-[var(--primary)] ${className}`}
     >
-      {isDark ? '☀' : '☾'}
+      <span aria-hidden>{isDark ? '☀' : '☾'}</span>
     </button>
   )
 }
