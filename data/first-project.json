@@ -1,0 +1,64 @@
+{
+  "id": "accessible-practice-brief",
+  "title": "Ship an accessible practice brief",
+  "summary": "Plan a tiny /launch page that a keyboard and screen-reader user can finish without a mouse or a visual-only deploy.",
+  "xp": 80,
+  "unlockAfterModules": 2,
+  "steps": [
+    {
+      "id": "brief",
+      "title": "Write the brief",
+      "prompt": "Write a shippable brief for a tiny /launch page. Name the user, the job, what done looks like, and one thing the agent must not invent.",
+      "hints": [
+        "Start with: “Signed-in learner lands on /launch, we verify a Ludwitt JWT, then redirect to /learn.”",
+        "Add one acceptance check a screen reader can confirm, such as the page heading becoming “Launch failed” when the token is invalid."
+      ],
+      "input": "textarea",
+      "doneLabel": "Save brief"
+    },
+    {
+      "id": "headings",
+      "title": "Outline the heading tree",
+      "prompt": "List the heading tree: one h1 for the product, one h2 for status, and where Skip to main content should land.",
+      "hints": [
+        "h1 stays stable (product name). Status belongs in h2 so screen-reader heading lists stay predictable.",
+        "Skip target is main#main-content, not the header logo."
+      ],
+      "input": "textarea",
+      "doneLabel": "Save heading tree"
+    },
+    {
+      "id": "control",
+      "title": "Name the control and its error",
+      "prompt": "Name the primary control (visible label, not placeholder-only) and the error text that should use role=\"alert\" when launch fails.",
+      "hints": [
+        "A good label is “Sign in with Ludwitt” or “Paste launch token” — not an unlabeled icon.",
+        "The alert should say what happened and what to do next, e.g. “Launch token expired. Sign in with Ludwitt again.”"
+      ],
+      "input": "textarea",
+      "doneLabel": "Save control names"
+    },
+    {
+      "id": "events",
+      "title": "List the three events",
+      "prompt": "List the three learning events you would fire on this page and when each fires.",
+      "hints": [
+        "lesson_started when the launch or practice view opens — not only on the marketing homepage.",
+        "quiz_submitted when the learner answers; lesson_completed on the summary. Heartbeats alone do not qualify a session."
+      ],
+      "input": "textarea",
+      "doneLabel": "Save events"
+    },
+    {
+      "id": "self-check",
+      "title": "Keyboard and screen-reader check",
+      "prompt": "Confirm you can finish this project with Tab and a screen reader. Check the box only if that is true for the steps you just wrote.",
+      "hints": [
+        "If a step needs a mouse-only control or a visual-only Vercel click, rewrite that step.",
+        "Skip link, a real h1, labeled controls, and an alert on failure are the minimum."
+      ],
+      "input": "affirm",
+      "doneLabel": "I can finish this with Tab and a screen reader"
+    }
+  ]
+}

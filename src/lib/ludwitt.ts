@@ -5,6 +5,9 @@ export type LudwittEventName =
   | 'lesson_completed'
   | 'quiz_submitted'
   | 'session_heartbeat'
+  | 'exercise_completed'
+  | 'project_step_completed'
+  | 'project_completed'
 
 export type LaunchClaims = {
   sub: string
@@ -109,7 +112,10 @@ export function parseEventBody (body: unknown): { ok: true; data: EventPayload }
     'lesson_started',
     'lesson_completed',
     'quiz_submitted',
-    'session_heartbeat'
+    'session_heartbeat',
+    'exercise_completed',
+    'project_step_completed',
+    'project_completed'
   ]
   if (typeof event !== 'string' || !allowed.includes(event as LudwittEventName)) {
     return { ok: false, error: 'Invalid event type' }

@@ -50,7 +50,16 @@
         "answer": 1,
         "explain": "Verifiable outcomes beat subjective vibes."
       }
-    ]
+    ],
+    "exercise": {
+      "title": "Rewrite a vague brief",
+      "prompt": "Rewrite this into a shippable brief (user, job, done check, one guardrail): “Make the launch page nicer with AI vibes.”",
+      "hints": [
+        "Name the route and the success path: /launch verifies a JWT, then /learn.",
+        "Add “do not invent deploy URLs” as the guardrail."
+      ],
+      "doneLabel": "Save this brief"
+    }
   },
   {
     "id": "api-contracts",
@@ -103,7 +112,16 @@
         "answer": 1,
         "explain": "Examples prevent invented field names."
       }
-    ]
+    ],
+    "exercise": {
+      "title": "Write one contract line",
+      "prompt": "Write a single contract line for posting a learning event: method, path, success status, and what happens without a session.",
+      "hints": [
+        "POST /api/events → 202 { ok: true } is clearer than “make an events endpoint.”",
+        "Say 401 when the session cookie is missing."
+      ],
+      "doneLabel": "Save contract line"
+    }
   },
   {
     "id": "auth-sessions",
@@ -156,7 +174,16 @@
         "answer": 1,
         "explain": "Tokens are secrets; keep them off the JS heap when possible."
       }
-    ]
+    ],
+    "exercise": {
+      "title": "Name cookie vs client",
+      "prompt": "In two short sentences: what belongs in the signed httpOnly session cookie, and what must never go in localStorage?",
+      "hints": [
+        "Cookie: user id + email (and maybe session id). Not api keys.",
+        "localStorage is the wrong home for refresh tokens and bearer secrets."
+      ],
+      "doneLabel": "Save the split"
+    }
   },
   {
     "id": "launch-trust",
@@ -204,7 +231,16 @@
         "answer": 1,
         "explain": "Wrong app_id means the token wasn’t minted for you."
       }
-    ]
+    ],
+    "exercise": {
+      "title": "Write the launch failure message",
+      "prompt": "Write the sentence a screen reader should hear when a launch token is expired or signed for the wrong app. Include what to do next.",
+      "hints": [
+        "Do not silently open /learn.",
+        "Example: “Launch token expired. Sign in with Ludwitt again from the listing.”"
+      ],
+      "doneLabel": "Save failure message"
+    }
   },
   {
     "id": "event-telemetry",
@@ -257,7 +293,16 @@
         "answer": 1,
         "explain": "Progress systems key off module identity in metadata."
       }
-    ]
+    ],
+    "exercise": {
+      "title": "Pick three events",
+      "prompt": "List the three events you would fire for one practice visit, and when each fires. Do not count heartbeats as the only signal.",
+      "hints": [
+        "lesson_started when the module opens.",
+        "quiz_submitted on each answer; lesson_completed on the summary."
+      ],
+      "doneLabel": "Save the three events"
+    }
   },
   {
     "id": "deploy-smoke",
@@ -310,7 +355,16 @@
         "answer": 1,
         "explain": "Listing/launcher entry ties users to platform attribution."
       }
-    ]
+    ],
+    "exercise": {
+      "title": "Write a smoke-check sentence",
+      "prompt": "Write the one-sentence smoke check you would run after a production deploy of EudaLearn.",
+      "hints": [
+        "Include a URL you can request, not only “it compiled.”",
+        "curl /api/health and open signed-in /learn is stronger than a green build log."
+      ],
+      "doneLabel": "Save smoke check"
+    }
   },
   {
     "id": "suite-thinking",
@@ -363,7 +417,16 @@
         "answer": 1,
         "explain": "Explicit CTAs are how distribution works."
       }
-    ]
+    ],
+    "exercise": {
+      "title": "Name a suite handoff",
+      "prompt": "Write one honest handoff from EudaMarket to EudaLearn. Say how auth works (and what you will not claim).",
+      "hints": [
+        "A clear CTA to the Ludwitt listing or /signup is a handoff.",
+        "Do not claim a single SSO cookie across every Euda host."
+      ],
+      "doneLabel": "Save the handoff"
+    }
   },
   {
     "id": "feedback-loops",
@@ -416,6 +479,139 @@
         "answer": 1,
         "explain": "Untrusted model text needs a guardrail."
       }
-    ]
+    ],
+    "exercise": {
+      "title": "Write one feedback question",
+      "prompt": "Write one review question a peer could answer that is verifiable (a URL, a heading, or a failing case) — not a vibe check.",
+      "hints": [
+        "“Does /launch announce an error when the token is expired?” is verifiable.",
+        "“Does it feel premium?” is not."
+      ],
+      "doneLabel": "Save the question"
+    }
+  },
+  {
+    "id": "accessible-structure",
+    "order": 9,
+    "skill": "Structure",
+    "title": "Name the page for a screen reader",
+    "minutes": 8,
+    "xp": 40,
+    "summary": "Headings, a main landmark, a skip link, and aria-current so keyboard and screen-reader users can move without guessing.",
+    "lesson": [
+      "One h1 per view. Use h2/h3 for sections so the H key and 1–3 keys match what sighted users see.",
+      "Put page content in main#main-content and make Skip to main content the first focusable control.",
+      "Mark the active nav item with aria-current=\"page\" instead of color alone.",
+      "Decorative glyphs (sun/moon, emoji prefixes) get aria-hidden so they are not announced twice."
+    ],
+    "quiz": [
+      {
+        "id": "q1",
+        "prompt": "Where should Skip to main content go?",
+        "choices": [
+          "After the footer, so it does not clutter the header",
+          "First focusable control, targeting main#main-content",
+          "Only in a help modal",
+          "On the logo as title text"
+        ],
+        "answer": 1,
+        "explain": "Skip is useless if you have to tab the whole chrome to reach it."
+      },
+      {
+        "id": "q2",
+        "prompt": "Best way to show the current Learn route in nav?",
+        "choices": [
+          "A brighter color with no name change",
+          "aria-current=\"page\" on the active link",
+          "A blinking icon with no label",
+          "Remove the other links"
+        ],
+        "answer": 1,
+        "explain": "Screen readers announce current page; color alone does not."
+      },
+      {
+        "id": "q3",
+        "prompt": "Why keep a visible h2 on the lesson, not sr-only only?",
+        "choices": [
+          "Sighted and screen-reader heading lists should match",
+          "h2 tags improve SEO more than h1",
+          "CSS cannot style sr-only text",
+          "Quizzes require two h1s"
+        ],
+        "answer": 0,
+        "explain": "If only screen-reader users get the heading, the outline is a lie for everyone else — and reviewers using H expect it."
+      }
+    ],
+    "exercise": {
+      "title": "Sketch the landmarks",
+      "prompt": "For a /launch page, list: the skip target id, the h1 text, one h2, and which nav item gets aria-current.",
+      "hints": [
+        "Skip target: #main-content. h1: product name. h2: Launch status.",
+        "If the user is on /launch, that link (or Sign in) is current — not every link."
+      ],
+      "doneLabel": "Save the landmarks"
+    }
+  },
+  {
+    "id": "accessible-feedback",
+    "order": 10,
+    "skill": "Announcements",
+    "title": "Announce results, don’t hide them",
+    "minutes": 8,
+    "xp": 40,
+    "summary": "Labels beat placeholders. Errors use role=alert. Success and quiz stage changes use polite live regions — the pattern EudaLearn already uses.",
+    "lesson": [
+      "Every control needs a visible label or an aria-label. Placeholder-only fields disappear when the box is filled.",
+      "Form errors use role=\"alert\" so they interrupt. Success uses role=\"status\" so they do not shout.",
+      "Quiz stage changes (Correct / Not quite / next question) belong in a polite aria-live region, not only a color change.",
+      "If the coach tip fails, keep the explanation — never trap the learner on a dead smart layer."
+    ],
+    "quiz": [
+      {
+        "id": "q1",
+        "prompt": "A search box with only placeholder=\"Search…\" fails because…",
+        "choices": [
+          "Placeholders are illegal in HTML",
+          "The name vanishes once the user types, and some AT skip placeholders",
+          "Placeholders cannot be styled",
+          "GET forms cannot have labels"
+        ],
+        "answer": 1,
+        "explain": "A visible label or aria-label stays after the user types."
+      },
+      {
+        "id": "q2",
+        "prompt": "Sign-in failed. Which role should the message use?",
+        "choices": [
+          "role=\"presentation\"",
+          "role=\"alert\"",
+          "role=\"marquee\"",
+          "No role — color the border red"
+        ],
+        "answer": 1,
+        "explain": "Errors should be announced without the user hunting for a red outline."
+      },
+      {
+        "id": "q3",
+        "prompt": "A polite live region is right for…",
+        "choices": [
+          "Every keystroke in the composer",
+          "Quiz verdict and coach tip after submit",
+          "Replacing the skip link",
+          "Hiding the h1"
+        ],
+        "answer": 1,
+        "explain": "Announce outcomes, not every character."
+      }
+    ],
+    "exercise": {
+      "title": "Write the alert",
+      "prompt": "Write the role=alert text for a failed Ludwitt sign-in, and one role=status line for “module complete.”",
+      "hints": [
+        "Alert: what failed + next step. Status: score and XP, no panic.",
+        "Do not rely on a red border as the only signal."
+      ],
+      "doneLabel": "Save the announcements"
+    }
   }
 ]

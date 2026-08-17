@@ -52,6 +52,18 @@ describe('parseEventBody', () => {
     expect(parsed.ok).toBe(true)
   })
 
+  it('accepts exercise and project events', () => {
+    expect(
+      parseEventBody({ event: 'exercise_completed', user_id: 'u1', session_id: 's1' }).ok
+    ).toBe(true)
+    expect(
+      parseEventBody({ event: 'project_step_completed', user_id: 'u1', session_id: 's1' }).ok
+    ).toBe(true)
+    expect(
+      parseEventBody({ event: 'project_completed', user_id: 'u1', session_id: 's1' }).ok
+    ).toBe(true)
+  })
+
   it('rejects heartbeat-only invalid type', () => {
     const parsed = parseEventBody({
       event: 'not_an_event',
